@@ -7,7 +7,8 @@
 // ==========================================
 
 // ⚠️ Replace this URL with your deployed Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...
+';
 
 // Event date for countdown (change as needed)
 const EVENT_DATE = new Date('2027-03-15T09:00:00');
