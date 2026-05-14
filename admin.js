@@ -3,8 +3,7 @@
    ============================================ */
 
 // ⚠️ Replace with your Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...
-';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDfclFNGixnUbToSu2mP3ldSN_LPO8QO6jUSRnIyHGDEcUzdKvcFYVqDNxPbkbnkla/exec';
 
 // All registration data
 let allData = [];
