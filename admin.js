@@ -77,15 +77,9 @@ async function fetchRegistrations() {
   }
 }
 
-// Demo data for offline testing
+// No demo data — only real registrations from Google Sheets
 function getDemoData() {
-  return [
-    { competition: 'DEBUGGING', rollNumber: '23SUCA027', name: 'ARUN KUMAR', teamMembers: 'N/A', timestamp: '5/14/2027, 10:30:00 AM' },
-    { competition: 'BLIND CODING', rollNumber: '23SUCA015', name: 'PRIYA SHARMA', teamMembers: 'N/A', timestamp: '5/14/2027, 11:00:00 AM' },
-    { competition: 'PPT PRESENTATION', rollNumber: '23SUCA010', name: 'RAVI KUMAR', teamMembers: '23SUCA011 - KARTHIK S', timestamp: '5/14/2027, 11:30:00 AM' },
-    { competition: 'SOFTWARE MARKETING', rollNumber: '23SUCA020', name: 'DIVYA M', teamMembers: '23SUCA021 - SNEHA R | 23SUCA022 - VISHNU K', timestamp: '5/14/2027, 12:00:00 PM' },
-    { competition: 'WEB DESIGN', rollNumber: '23SUCA033', name: 'HARISH B', teamMembers: 'N/A', timestamp: '5/14/2027, 12:30:00 PM' },
-  ];
+  return [];
 }
 
 // ==========================================
