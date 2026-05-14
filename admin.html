@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITECA'27 — Admin Panel</title>
+  <meta name="description" content="ITECA'27 Admin Dashboard - Manage registrations" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="loader-screen" id="loader">
+    <div class="loader-spinner"></div>
+    <p>Admin Panel</p>
+  </div>
+
+  <!-- Background orbs -->
+  <div class="bg-effects">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <div class="container">
+
+    <!-- Admin Header -->
+    <div class="admin-header">
+      <h1>📊 ITECA'27 Admin</h1>
+      <div class="nav-actions">
+        <button class="btn-icon" onclick="toggleTheme()" id="theme-toggle" title="Toggle theme">🌙</button>
+        <button class="btn btn-ghost btn-sm" onclick="refreshData()">🔄 Refresh</button>
+        <button class="btn btn-ghost btn-sm" onclick="downloadExcel()">📥 Excel</button>
+        <a href="index.html" class="btn btn-ghost btn-sm">← Back</a>
+        <button class="btn btn-ghost btn-sm" onclick="logout()" style="color:#ef4444;">Logout</button>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-solo">0</div>
+        <div class="stat-lbl">Solo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-team">0</div>
+        <div class="stat-lbl">Teams</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-today">0</div>
+        <div class="stat-lbl">Today</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="admin-controls">
+      <input type="text" id="search-input" placeholder="🔍 Search by name or roll..." oninput="filterTable()" />
+      <select id="comp-filter" onchange="filterTable()">
+        <option value="all">All Competitions</option>
+        <option value="DEBUGGING">Debugging</option>
+        <option value="BLIND CODING">Blind Coding</option>
+        <option value="PROGRAM DEVELOPMENT">Program Development</option>
+        <option value="WEB DESIGN">Web Design</option>
+        <option value="POSTER MAKING">Poster Making</option>
+        <option value="PPT PRESENTATION">PPT Presentation</option>
+        <option value="SOFTWARE MARKETING">Software Marketing</option>
+      </select>
+    </div>
+
+    <!-- Data Table -->
+    <div class="data-table-wrap">
+      <table class="data-table" id="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Competition</th>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Team Members</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="6" class="no-data">Loading registrations...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>ITECA'27 Admin Panel &copy; 2027</p>
+    </footer>
+
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
