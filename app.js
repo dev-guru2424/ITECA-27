@@ -442,15 +442,21 @@ function closeAdminModal() {
 }
 
 function handleAdminLogin() {
+
   const user = document.getElementById('admin-user').value;
+
   const pass = document.getElementById('admin-pass').value;
 
   if (user === ADMIN_USER && pass === ADMIN_PASS) {
-    // Store session and redirect
+
     sessionStorage.setItem('iteca-admin', 'true');
+
     window.location.href = 'admin.html';
+
   } else {
+
     showToast('Invalid credentials', 'error');
+
   }
 }
 
