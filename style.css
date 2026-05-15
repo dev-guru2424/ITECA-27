@@ -159,6 +159,19 @@ body {
 
 .btn-sm { padding: 8px 14px; font-size: 0.8rem; }
 
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+.btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(239, 68, 68, 0.5); }
+
+.btn-xs { padding: 6px 10px; font-size: 0.72rem; border-radius: 8px; }
+
+/* Modal text and actions */
+.modal-text { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; text-align: center; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions .btn { flex: 1; justify-content: center; }
+
 /* --- Hero Section --- */
 .hero {
   text-align: center; padding: 40px 16px; margin-bottom: 32px;

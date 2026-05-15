@@ -1,12 +1,13 @@
 /* ============================================
    ITECA'27 - Admin Panel Logic
+   Firebase Firestore Version
    ============================================ */
 
-// ⚠️ Replace with your Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDfclFNGixnUbToSu2mP3ldSN_LPO8QO6jUSRnIyHGDEcUzdKvcFYVqDNxPbkbnkla/exec';
-
-// All registration data
+// All registration data (loaded from Firestore)
 let allData = [];
+
+// ID of the registration pending deletion
+let pendingDeleteId = null;
 
 // ==========================================
 // INITIALIZATION
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('loader').classList.add('hidden');
   }, 800);
 
-  // Load data
+  // Load data from Firestore
   fetchRegistrations();
 });
 
@@ -50,36 +51,22 @@ function toggleTheme() {
 })();
 
 // ==========================================
-// FETCH REGISTRATIONS FROM GOOGLE SHEETS
+// FETCH REGISTRATIONS FROM FIRESTORE
 // ==========================================
 async function fetchRegistrations() {
   try {
-    const response = await fetch(APPS_SCRIPT_URL + '?action=getAll');
-    const result = await response.json();
-
-    if (result.status === 'success') {
-      allData = result.data || [];
-      updateStats();
-      renderTable(allData);
-      showToast(`Loaded ${allData.length} registrations`, 'success');
-    } else {
-      showToast('Failed to fetch data', 'error');
-      renderTable([]);
-    }
-  } catch (error) {
-    console.error('Fetch error:', error);
-    showToast('Cannot connect to server. Check your Apps Script URL.', 'error');
-
-    // Show demo data for testing
-    allData = getDemoData();
+    // Use the helper function from firebase.js
+    allData = await getAllRegistrations();
     updateStats();
     renderTable(allData);
+    showToast(`Loaded ${allData.length} registrations`, 'success');
+  } catch (error) {
+    console.error('Fetch error:', error);
+    showToast('Cannot connect to Firebase. Check your config.', 'error');
+    allData = [];
+    updateStats();
+    renderTable([]);
   }
-}
-
-// No demo data — only real registrations from Google Sheets
-function getDemoData() {
-  return [];
 }
 
 // ==========================================
@@ -108,7 +95,7 @@ function renderTable(data) {
   const tbody = document.getElementById('table-body');
 
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="no-data">No registrations found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="no-data">No registrations found</td></tr>';
     return;
   }
 
@@ -120,6 +107,9 @@ function renderTable(data) {
       <td>${row.name || ''}</td>
       <td>${row.teamMembers || 'N/A'}</td>
       <td>${row.timestamp || ''}</td>
+      <td>
+        <button class="btn btn-danger btn-xs" onclick="openDeleteModal('${row.id}', '${(row.name || '').replace(/'/g, "\\'")}', '${(row.competition || '').replace(/'/g, "\\'")}')">🗑️</button>
+      </td>
     </tr>
   `).join('');
 }
@@ -151,6 +141,49 @@ function filterTable() {
 }
 
 // ==========================================
+// DELETE REGISTRATION
+// ==========================================
+
+// Open delete confirmation modal
+function openDeleteModal(docId, name, competition) {
+  pendingDeleteId = docId;
+  document.getElementById('delete-modal-text').textContent = 
+    `Delete registration of "${name}" from "${competition}"?`;
+  document.getElementById('delete-modal').classList.add('active');
+}
+
+// Close delete modal
+function closeDeleteModal() {
+  pendingDeleteId = null;
+  document.getElementById('delete-modal').classList.remove('active');
+}
+
+// Confirm and execute delete
+async function confirmDelete() {
+  if (!pendingDeleteId) return;
+
+  const deleteBtn = document.getElementById('confirm-delete-btn');
+  deleteBtn.disabled = true;
+  deleteBtn.textContent = 'Deleting...';
+
+  try {
+    // Delete from Firestore using firebase.js helper
+    await deleteRegistrationById(pendingDeleteId);
+    showToast('Registration deleted successfully', 'success');
+
+    // Refresh the data
+    closeDeleteModal();
+    await fetchRegistrations();
+  } catch (error) {
+    console.error('Delete error:', error);
+    showToast('Failed to delete. Please try again.', 'error');
+  } finally {
+    deleteBtn.disabled = false;
+    deleteBtn.textContent = 'Delete';
+  }
+}
+
+// ==========================================
 // DOWNLOAD EXCEL
 // ==========================================
 function downloadExcel() {
@@ -165,6 +198,7 @@ function downloadExcel() {
     'Competition': row.competition,
     'Roll Number': row.rollNumber,
     'Name': row.name,
+    'Email': row.email || '',
     'Team Members': row.teamMembers,
     'Timestamp': row.timestamp
   }));

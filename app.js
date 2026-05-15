@@ -1,13 +1,16 @@
 /* ============================================
    ITECA'27 - Main Application Logic
+   Firebase + PHPMailer Version
    ============================================ */
 
 // ==========================================
 // CONFIGURATION
 // ==========================================
 
-// ⚠️ Replace this URL with your deployed Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDfclFNGixnUbToSu2mP3ldSN_LPO8QO6jUSRnIyHGDEcUzdKvcFYVqDNxPbkbnkla/exec';
+// ⚠️ Replace this URL with your PHP backend URL
+// For local XAMPP testing: 'http://localhost/xampp/ITECA\'27/backend/sendmail.php'
+// For InfinityFree/000webhost: 'https://your-domain.com/sendmail.php'
+const PHP_BACKEND_URL = 'http://localhost/xampp/ITECA%2727/backend/sendmail.php';
 
 // Event date for countdown (change as needed)
 const EVENT_DATE = new Date('2027-03-15T09:00:00');
@@ -258,7 +261,7 @@ function cancelRegistration() {
 }
 
 // ==========================================
-// SUBMIT REGISTRATION
+// SUBMIT REGISTRATION (Firebase + PHPMailer)
 // ==========================================
 async function submitRegistration() {
   // Validate competition selected
@@ -311,20 +314,10 @@ async function submitRegistration() {
   // Generate email from roll number
   const email = rollNumber.toLowerCase() + '@vhnsnc.edu.in';
 
-  // Build team string for Sheets
+  // Build team string for storage
   const teamStr = teamMembers.length > 0
     ? teamMembers.map(m => `${m.roll} - ${m.name}`).join(' | ')
     : 'N/A';
-
-  // Prepare payload
-  const payload = {
-    competition: selectedCompetition.name,
-    rollNumber: rollNumber,
-    name: name,
-    email: email,
-    teamMembers: teamStr,
-    timestamp: new Date().toLocaleString()
-  };
 
   // Show loading state
   const submitBtn = document.getElementById('submit-btn');
@@ -333,22 +326,59 @@ async function submitRegistration() {
   submitBtn.textContent = 'Submitting...';
 
   try {
-    // Send to Google Apps Script
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors', // Required for Apps Script
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    // ── Step 1: Check for duplicate registration in Firebase ──
+    const isDuplicate = await checkDuplicate(selectedCompetition.name, rollNumber);
+    if (isDuplicate) {
+      showToast('You have already registered for this competition!', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      return;
+    }
 
-    // Since no-cors returns opaque response, we assume success
-    // The Apps Script handles duplicates and returns errors
-    showToast(`Successfully registered for ${selectedCompetition.name}!`, 'success');
+    // ── Step 2: Save registration to Firebase Firestore ──
+    const registrationData = {
+      competition: selectedCompetition.name,
+      rollNumber: rollNumber,
+      name: name,
+      email: email,
+      teamMembers: teamStr
+    };
+
+    await addRegistration(registrationData);
+
+    // ── Step 3: Send confirmation email via PHP backend ──
+    try {
+      const emailResponse = await fetch(PHP_BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          name: name,
+          competition: selectedCompetition.name,
+          teamMembers: teamStr
+        })
+      });
+
+      const emailResult = await emailResponse.json();
+
+      if (emailResult.status === 'success') {
+        console.log('📧 Email sent successfully');
+      } else {
+        console.warn('📧 Email failed:', emailResult.message);
+        // Don't show error to user — registration already saved
+      }
+    } catch (emailError) {
+      // Email sending failed but registration is saved
+      console.warn('📧 Email service unreachable:', emailError);
+    }
+
+    // ── Step 4: Show success and reset form ──
+    showToast(`Successfully registered for ${selectedCompetition.name}! 🎉`, 'success');
     cancelRegistration();
 
   } catch (error) {
     console.error('Registration error:', error);
-    showToast('Network error. Please try again.', 'error');
+    showToast('Registration failed. Please try again.', 'error');
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
