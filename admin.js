@@ -2,7 +2,15 @@
    ITECA'27 - Admin Panel Logic
    Firebase Firestore Version
    ============================================ */
+// ==========================================
+// ADMIN SECURITY CHECK
+// ==========================================
 
+if (sessionStorage.getItem('iteca-admin') !== 'true') {
+
+    window.location.href = 'index.html';
+
+}
 // All registration data (loaded from Firestore)
 let allData = [];
 
