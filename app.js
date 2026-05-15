@@ -10,7 +10,7 @@
 // ⚠️ Replace this URL with your PHP backend URL
 // For local XAMPP testing: 'http://localhost/xampp/ITECA\'27/backend/sendmail.php'
 // For InfinityFree/000webhost: 'https://your-domain.com/sendmail.php'
-const PHP_BACKEND_URL = 'http://localhost/xampp/ITECA%2727/backend/sendmail.php';
+const PHP_BACKEND_URL ='https://iteca.free.nf/sendmail.php';
 
 // Event date for countdown (change as needed)
 const EVENT_DATE = new Date('2027-03-15T09:00:00');
