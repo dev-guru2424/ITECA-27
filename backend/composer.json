@@ -1,7 +1,0 @@
-{
-    "name": "iteca27/mail-backend",
-    "description": "ITECA'27 PHPMailer Backend for sending registration confirmation emails via Gmail SMTP",
-    "require": {
-        "phpmailer/phpmailer": "^6.9"
-    }
-}
