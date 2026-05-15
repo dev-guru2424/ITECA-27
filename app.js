@@ -13,10 +13,10 @@
 const PHP_BACKEND_URL ='https://iteca.free.nf/sendmail.php';
 
 // Event date for countdown (change as needed)
-const EVENT_DATE = new Date('2027-03-15T09:00:00');
+const EVENT_DATE = new Date('2027-05-15T09:00:00');
 
 // Registration close date
-const REG_CLOSE_DATE = new Date('2027-03-10T23:59:59');
+const REG_CLOSE_DATE = new Date('2027-05-10T23:59:59');
 
 // Competition data
 const COMPETITIONS = [
