@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // ==========================================
 
 // ⚠️ REPLACE with your Gmail address
-define('SMTP_EMAIL', 'iteca27@gmail.com');
+define('SMTP_EMAIL', 'vhnsnciteca27@gmail.com');
 
 // ⚠️ REPLACE with your Gmail App Password (16 characters, no spaces)
-define('SMTP_APP_PASSWORD', 'YOUR_APP_PASSWORD_HERE');
+define('SMTP_APP_PASSWORD', 'imiuytxwtugzjlow');
 
 // Sender display name
 define('SENDER_NAME', "ITECA'27");
